@@ -13,7 +13,7 @@ class Channel {
     });
   }
 
-  stringPull () {
+  stringPull (randomness) {
     const portals = this.portals;
     const pts = [];
     // Init scan state
@@ -40,11 +40,42 @@ class Channel {
           portalRight = right;
           rightIndex = i;
         } else {
-          // Right over left, insert left to path and restart scan from portal left point.
-          pts.push(portalLeft);
-          // Make current left the new apex.
-          portalApex = portalLeft;
-          apexIndex = leftIndex;
+          // Right over left, insert randomly on the portal to avoid sticking on the edge and
+          // insert it to path and restart scan from there.
+          if (randomness) {
+              const apex = portalRight.clone().sub(portalLeft).multiplyScalar(randomness * Math.random()).add(portalLeft);
+              pts.push(apex);
+              // Make current left the new apex.
+              portalApex = apex;
+
+              apexIndex = leftIndex;
+              if (leftIndex !== rightIndex) {
+                // Because now we are now not on the end point anymore, there might be some portals we need to skip
+                // in order not to go backward.
+                // First we make a line segment connecting the current apex with PortalLeft.
+                const segment = { left: portalLeft, right: apex };
+                for (let portalIndex=leftIndex; portalIndex<=rightIndex; portalIndex++) {
+                  // We go through the possibly skippable portals.
+                  if (portalIndex === rightIndex || Utils.vequal(portals[portalIndex].right, portalRight)) {
+                    // Apex on portal, cannot skip;
+                    apexIndex = portalIndex;
+                    break;
+                  }
+                  if (!Utils.portalsIntersect(portals[portalIndex], segment)) {
+                    // When our apex segment intersects the current portal, it means it's skippable.
+                    // Otherwise we stop iterating. p.s. sharing one end point counts as intersected.
+                    apexIndex = portalIndex;
+                    break;
+                  }
+                }
+            }
+          } else {
+            // Right over left, insert left to path and restart scan from portal left point.
+            pts.push(portalLeft);
+            // Make current left the new apex.
+            portalApex = portalLeft;
+            apexIndex = leftIndex;
+          }
           // Reset portal
           portalLeft = portalApex;
           portalRight = portalApex;
@@ -63,11 +94,36 @@ class Channel {
           portalLeft = left;
           leftIndex = i;
         } else {
-          // Left over right, insert right to path and restart scan from portal right point.
-          pts.push(portalRight);
-          // Make current right the new apex.
-          portalApex = portalRight;
-          apexIndex = rightIndex;
+          if (randomness) {
+            // Left over right, insert intermediate point to path and restart scan from it.
+            const apex = portalLeft.clone().sub(portalRight).multiplyScalar(randomness * Math.random()).add(portalRight);
+            pts.push(apex);
+            // Make current apex the new apex.
+            portalApex = apex;
+
+            apexIndex = rightIndex;
+            if (rightIndex !== leftIndex) {
+              const segment = { left: apex, right: portalRight };
+              for (let portalIndex=rightIndex; portalIndex<=leftIndex; portalIndex++) {
+                if (portalIndex === leftIndex || Utils.vequal(portals[portalIndex].left, portalLeft)) {
+                  // apex on portal
+                  apexIndex = portalIndex;
+                  break;
+                }
+                if (!Utils.portalsIntersect(portals[portalIndex], segment)) {
+                  // stop looking ahead
+                  apexIndex = portalIndex;
+                  break;
+                }
+              }
+            }
+          } else {
+            // Left over right, insert right to path and restart scan from portal right point.
+            pts.push(portalRight);
+            // Make current right the new apex.
+            portalApex = portalRight;
+            apexIndex = rightIndex;
+          }
           // Reset portal
           portalLeft = portalApex;
           portalRight = portalApex;

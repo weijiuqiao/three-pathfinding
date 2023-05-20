@@ -64,6 +64,19 @@ class Utils {
     return this.distanceToSquared(a, b) < 0.00001;
   }
 
+  static portalsIntersect(segment1, segment2) {
+    function ccw(p1, p2, p3) {
+        return (p3.z - p1.z) * (p2.x - p1.x) > (p2.z - p1.z) * (p3.x - p1.x);
+    }
+    if ((segment1.left.x === segment2.left.x && segment1.left.z === segment2.left.z) ||
+        (segment1.left.x === segment2.right.x && segment1.left.z === segment2.right.z) ||
+        (segment1.right.x === segment2.left.x && segment1.right.z === segment2.left.z) ||
+        (segment1.right.x === segment2.right.x && segment1.right.z === segment2.right.z)) {
+        return true;
+    }
+    return ccw(segment1.left, segment2.left, segment2.right) !== ccw(segment1.right, segment2.left, segment2.right) && ccw(segment1.left, segment1.right, segment2.left) !== ccw(segment1.left, segment1.right, segment2.right);
+}
+
   /**
    * Modified version of BufferGeometryUtils.mergeVertices, ignoring vertex
    * attributes other than position.
