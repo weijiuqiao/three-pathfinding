@@ -77,7 +77,7 @@ class AStar {
 
         // The g score is the shortest distance from start to current node.
         // We need to check if the path we have arrived at this neighbour is the shortest one we have seen yet.
-        const gScore = currentNode.g + neighbour.cost;
+        const gScore = currentNode.g + Utils.distanceToSquared(currentNode.centroid, neighbour.centroid);
         const beenVisited = neighbour.visited;
 
         if (!beenVisited || gScore < neighbour.g) {
