@@ -1,4 +1,4 @@
-import { BufferAttribute, BufferGeometry } from 'three';
+import { BufferAttribute, BufferGeometry, Vector3 } from 'three';
 
 class Utils {
 
@@ -58,6 +58,17 @@ class Utils {
     var bx = c.x - a.x;
     var bz = c.z - a.z;
     return bx * az - ax * bz;
+  }
+
+  static isCoplanar(A, B, C, D, tolerance=0.01) {
+    const ab = new Vector3().subVectors(B, A);
+    const ac = new Vector3().subVectors(C, A);
+    const normal = new Vector3().crossVectors(ab, ac).normalize();
+
+    const ad = new Vector3().subVectors(D, A);
+    const angle = normal.angleTo(ad);
+
+    return Math.abs(Math.PI / 2 - angle) <= tolerance;
   }
 
   static vequal (a, b) {

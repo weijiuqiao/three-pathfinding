@@ -29,8 +29,11 @@ test('simple path', (t) => {
   const b = new THREE.Vector3(-7.5, 0, 0);
   const groupID = pathfinding.getGroup(ZONE, a);
   const path = pathfinding.findPath(a, b, ZONE, groupID);
+  const pathRandom = pathfinding.findPath(a, b, ZONE, groupID, Math.random() * 0.9 + 0.05);
   t.ok(path, 'finds path');
   t.equal(path.length, 6, 'path contains 6 waypoints');
+  t.ok(pathRandom, 'finds path with randomness');
+  t.equal(pathRandom.length, 6, 'path contains 6 waypoints');
   t.end();
 });
 

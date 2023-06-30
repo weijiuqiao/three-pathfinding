@@ -31,7 +31,6 @@
 	</demo-sidebar>
 
 
-
 	<script type="module">
 		import * as THREE from 'three';
 		import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -295,7 +294,7 @@
 			if (closestTargetNode) helper.setNodePosition( closestTargetNode.centroid );
 
 			// Calculate a path to the target and store it
-			path = pathfinder.findPath( playerPosition, targetPosition, ZONE, groupID );
+			path = pathfinder.findPath( playerPosition, targetPosition, ZONE, groupID, true, true );
 
 			if ( path && path.length ) {
 

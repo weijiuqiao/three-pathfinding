@@ -1,8 +1,4 @@
-import {
-	Vector3,
-	Plane,
-	Triangle,
-} from 'three';
+import { Vector3, Plane, Triangle } from 'three';
 
 import { Utils } from './Utils';
 import { AStar } from './AStar';
@@ -101,10 +97,11 @@ class Pathfinding {
 	 * @param  {Vector3} targetPosition Destination.
 	 * @param  {string} zoneID ID of current zone.
 	 * @param  {number} groupID Current group ID.
-	 * @param	 {number} randomness Apex deviation limit from the edge, 0-1.
+	 * @param	 {boolean} center Apex deviation from the edge.
+	 * @param	 {boolean} forceCoplanar Whether to force coplanar when finding path.
 	 * @return {Array<Vector3>} Array of points defining the path.
 	 */
-	findPath (startPosition, targetPosition, zoneID, groupID, randomness) {
+	findPath (startPosition, targetPosition, zoneID, groupID, center, forceCoplanar) {
 		const nodes = this.zones[zoneID].groups[groupID];
 		const vertices = this.zones[zoneID].vertices;
 
@@ -142,7 +139,7 @@ class Pathfinding {
 			}
 		}
 		channel.push(targetPosition);
-		channel.stringPull(randomness);
+		channel.stringPull(center, forceCoplanar);
 
 		// Return the path, omitting first position (which is already known).
 		const path = channel.path.map((c) => new Vector3(c.x, c.y, c.z));

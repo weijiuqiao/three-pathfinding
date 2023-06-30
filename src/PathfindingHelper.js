@@ -1,15 +1,4 @@
-import {
-  BoxGeometry,
-  SphereGeometry,
-  BufferAttribute,
-  BufferGeometry,
-  Line,
-  LineBasicMaterial,
-  Mesh,
-  MeshBasicMaterial,
-  Object3D,
-  Vector3,
-} from 'three';
+import { BoxGeometry, SphereGeometry, BufferAttribute, BufferGeometry, Line, LineBasicMaterial, Mesh, MeshBasicMaterial, Object3D, Vector3 } from 'three';
 
 const colors = {
   PLAYER: 0xEE836F,
@@ -20,7 +9,7 @@ const colors = {
   CLOSEST_NODE: 0x43676B,
 };
 
-const OFFSET = 0.2;
+const OFFSET = 0.1;
 
 /**
  * Helper for debugging pathfinding behavior.
@@ -55,7 +44,7 @@ class PathfindingHelper extends Object3D {
 
     this._pathLineMaterial = new LineBasicMaterial( { color: colors.PATH, linewidth: 2 } ) ;
     this._pathPointMaterial = new MeshBasicMaterial( { color: colors.WAYPOINT } );
-    this._pathPointGeometry = new SphereGeometry( 0.08 );
+    this._pathPointGeometry = new SphereGeometry( 0.01 );
 
     this._markers = [
       this._playerMarker,

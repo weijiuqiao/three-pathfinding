@@ -53,7 +53,7 @@ class AStar {
       if (currentNode === end) {
         let curr = currentNode;
         const ret = [];
-        while (curr.parent) {
+        while (curr) {
           ret.push(curr);
           curr = curr.parent;
         }
